@@ -27,12 +27,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Step tambahan buat tarik scrapers sebelum build
+      # Step untuk membuat folder scrapers & utils serta mengambil file scraper
       - name: Fetch Scrapers from coflyn/scrapr
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p src/scrapers
+          mkdir -p src/utils
           gh repo clone coflyn/scrapr temp-scrapr -- --depth 1
           cp -r temp-scrapr/lib/* src/scrapers/
           rm -rf temp-scrapr
