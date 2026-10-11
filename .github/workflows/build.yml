@@ -45,10 +45,13 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Fix gradle.properties & Build APK
+      - name: Fix gradle.properties & Signing Config then Build APK
         run: |
           cd android
+          # Hapus path Java lokal
           sed -i '/org.gradle.java.home/d' gradle.properties
+          # Ubah signingConfig release menjadi debug agar tidak minta file keystore
+          sed -i 's/signingConfig signingConfigs.release/signingConfig signingConfigs.debug/g' app/build.gradle
           chmod +x gradlew
           ./gradlew assembleDebug
 
