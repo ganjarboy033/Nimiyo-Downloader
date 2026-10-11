@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,8 +27,18 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      # Step tambahan buat tarik scrapers sebelum build
+      - name: Fetch Scrapers from coflyn/scrapr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p src/scrapers
+          gh repo clone coflyn/scrapr temp-scrapr -- --depth 1
+          cp -r temp-scrapr/lib/* src/scrapers/
+          rm -rf temp-scrapr
+
       - name: Build Web Assets
-        run: npm run build # Atau node build.js jika sesuai package.json
+        run: npm run build
 
       - name: Sync Capacitor
         run: npx cap sync android
@@ -41,5 +52,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
+          name: Nimiyo-Downloader-Debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
