@@ -40,15 +40,16 @@ jobs:
       - name: Build Web Assets
         run: npm run build
 
-      # Copy langsung hasil build web ke folder assets Android
       - name: Copy Web Assets to Android
         run: |
           mkdir -p android/app/src/main/assets/public
           cp -r www/* android/app/src/main/assets/public/
 
-      - name: Build APK (Debug)
+      - name: Fix gradle.properties & Build APK
         run: |
           cd android
+          # Hapus settingan path Java lokal bawaan dev
+          sed -i '/org.gradle.java.home/d' gradle.properties
           chmod +x gradlew
           ./gradlew assembleDebug
 
