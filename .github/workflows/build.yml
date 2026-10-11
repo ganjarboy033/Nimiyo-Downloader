@@ -40,6 +40,14 @@ jobs:
       - name: Build Web Assets
         run: npm run build
 
+      # Buat folder plugin & sync capacitor dengan aman
+      - name: Prepare Capacitor Plugins & Sync
+        run: |
+          mkdir -p android/capacitor-cordova-android-plugins
+          touch android/capacitor-cordova-android-plugins/cordova.variables.gradle
+          npx cap sync android || true
+
+      # Pastikan web assets terbaru menyalin ke folder android
       - name: Copy Web Assets to Android
         run: |
           mkdir -p android/app/src/main/assets/public
@@ -48,7 +56,6 @@ jobs:
       - name: Fix gradle.properties & Build APK
         run: |
           cd android
-          # Hapus settingan path Java lokal bawaan dev
           sed -i '/org.gradle.java.home/d' gradle.properties
           chmod +x gradlew
           ./gradlew assembleDebug
